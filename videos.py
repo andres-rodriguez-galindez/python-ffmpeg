@@ -1,4 +1,12 @@
 import yt_dlp
+import subprocess
+
+def verificar_ffmpeg():
+    try:
+        subprocess.run(['ffmpeg', '-version'], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print("FFmpeg está instalado correctamente.")
+    except Exception:
+        print("FFmpeg no está instalado o no está en el PATH. Descárgalo de https://ffmpeg.org/download.html y agrégalo al PATH.")
 
 def listar_formatos(link):
     ydl_opts = {
@@ -27,6 +35,7 @@ def descargar_video(link):
     except Exception as e:
         print(f"Hubo un problema al descargar: {e}")
 
+verificar_ffmpeg()
 link = str(input("Pega el link del video a descargar: ")).strip()
 
 print("Listando formatos disponibles...")
