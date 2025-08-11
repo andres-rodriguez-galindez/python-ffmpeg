@@ -21,6 +21,17 @@ def listar_formatos(link):
         print(f"No se pudieron listar los formatos: {e}")
 
 def descargar_video(link):
+    def mostrar_progreso(d):
+        if d['status'] == 'downloading':
+            # Mostrar progreso de descarga con porcentaje y velocidad
+            if 'total_bytes' in d:
+                porcentaje = d['downloaded_bytes']/d['total_bytes']*100
+                print(f"\rDescargando: {porcentaje:.1f}% - Velocidad: {d.get('speed', 'N/A'):.1f} bytes/s", end='')
+            else:
+                print(f"\rDescargando... - Velocidad: {d.get('speed', 'N/A'):.1f} bytes/s", end='')
+        elif d['status'] == 'finished':
+            print("\nDescarga completada, procesando...")
+
     ydl_opts = {
         # Selecciona la mejor calidad absoluta sin restricciones
         'format': 'bestvideo+bestaudio',
@@ -29,7 +40,7 @@ def descargar_video(link):
         'postprocessors': [],
         'noplaylist': True,  # Descarga solo un video, no listas completas
         'quiet': False,
-        'progress_hooks': [lambda d: print(f"Progreso: {d['status']}" if 'status' in d else d)]
+        'progress_hooks': [mostrar_progreso]
     }
 
     # Si existe cookies.txt, usarlo para evitar errores 403
